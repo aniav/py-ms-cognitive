@@ -3,7 +3,7 @@ import os
 import platform
 
 DESCRIPTION = "A simple lightweight python wrapper for the Microsoft Cognitive Services."
-VERSION = '0.3.0'
+VERSION = '0.4.0'
 LONG_DESCRIPTION = None
 try:
     LONG_DESCRIPTION = open('README.md').read()
@@ -29,8 +29,8 @@ INSTALL_REQUIRES = [
 
 setup(
     name='py-ms-cognitive',
-    #packages = ['py-ms-cognitive'],
-    packages = find_packages(),
+    # packages = ['py-ms-cognitive'],
+    packages=find_packages(),
     version=VERSION,
     author=u'Tristan Tao',
     author_email='tristan@teamleada.com',
