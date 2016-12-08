@@ -1,14 +1,12 @@
-import requests, requests.utils
-from py_ms_cognitive_search import PyMsCognitiveSearch
+""" Web Search """
+import requests
+import requests.utils
+from .py_ms_cognitive_search import PyMsCognitiveSearch, QueryChecker
 
-##
-##
-## Web Search
-##
-##
 
 class PyMsCognitiveWebSearchException(Exception):
     pass
+
 
 class PyMsCognitiveWebSearch(PyMsCognitiveSearch):
 
@@ -16,29 +14,38 @@ class PyMsCognitiveWebSearch(PyMsCognitiveSearch):
 
     def __init__(self, api_key, query, safe=False, custom_params=''):
         query_url = self.SEARCH_WEB_BASE + custom_params
-        PyMsCognitiveSearch.__init__(self, api_key, query, query_url, safe=safe)
+        PyMsCognitiveSearch.__init__(
+            self, api_key, query, query_url, safe=safe)
 
     def _search(self, limit, format):
         '''
-        Returns a list of result objects, with the url for the next page MsCognitive search url.
+        Returns a list of result objects.
+
+        With the url for the next page MsCognitive search url.
         '''
         payload = {
-          'q' : self.query,
-          'count' : '50', #currently 50 is max per search.
-          'offset': self.current_offset,
-          #'mkt' : 'en-us', #optional
-          #'safesearch' : 'Moderate', #optional
+            'q': self.query,
+            'count': '50',  # currently 50 is max per search.
+            'offset': self.current_offset,
+            # 'mkt' : 'en-us', #optional
+            # 'safesearch' : 'Moderate', #optional
         }
-        headers = { 'Ocp-Apim-Subscription-Key' : self.api_key }
+        headers = {'Ocp-Apim-Subscription-Key': self.api_key}
         if self.safe:
             QueryChecker.check_web_params(payload, headers)
-        response = requests.get(self.QUERY_URL, params=payload, headers=headers)
+        response = requests.get(
+            self.QUERY_URL, params=payload, headers=headers)
         json_results = self.get_json_results(response)
-        packaged_results = [WebResult(single_result_json) for single_result_json in json_results["webPages"]["value"]]
+        packaged_results = [
+            WebResult(single_result_json)
+            for single_result_json in json_results["webPages"]["value"]
+        ]
         self.current_offset += min(50, limit, len(packaged_results))
         return packaged_results
 
+
 class WebResult(object):
+
     '''
     The class represents a SINGLE search result.
     Each result will come with the following:
@@ -60,6 +67,6 @@ class WebResult(object):
         self.snippet = result.get('snippet')
         self.id = result.get('id')
 
-        #maintain compatibility
+        # maintain compatibility
         self.title = result.get('name')
         self.description = result.get('snippet')
