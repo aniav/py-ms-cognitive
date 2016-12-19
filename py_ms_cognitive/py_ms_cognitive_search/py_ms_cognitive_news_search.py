@@ -4,6 +4,9 @@ import requests.utils
 from py_ms_cognitive_search import PyMsCognitiveSearch
 
 
+MAX_COUNT = 100
+
+
 class PyMsCognitiveNewsException(Exception):
     pass
 
@@ -26,7 +29,7 @@ class PyMsCognitiveNewsSearch(PyMsCognitiveSearch):
         '''
         payload = {
             'q': self.query,
-            'count': '50',  # currently 50 is max per search.
+            'count': MAX_COUNT,  # currently 100 is max per search.
             'offset': self.current_offset,
             #'mkt' : 'en-us', #optional
             #'safesearch' : 'Moderate', #optional
@@ -40,7 +43,7 @@ class PyMsCognitiveNewsSearch(PyMsCognitiveSearch):
             NewsResult(single_result_json)
             for single_result_json in json_results["value"]
         ]
-        self.current_offset += min(50, limit, len(packaged_results))
+        self.current_offset += min(MAX_COUNT, limit, len(packaged_results))
         return packaged_results
 
 
