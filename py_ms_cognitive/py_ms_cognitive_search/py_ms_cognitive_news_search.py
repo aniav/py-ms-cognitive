@@ -1,7 +1,7 @@
 """News search"""
 import requests
 import requests.utils
-from py_ms_cognitive_search import PyMsCognitiveSearch
+from .py_ms_cognitive_search import PyMsCognitiveSearch
 
 
 MAX_COUNT = 100
